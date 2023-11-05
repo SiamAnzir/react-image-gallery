@@ -1,5 +1,5 @@
 import React from "react";
-import {Container, Nav, Navbar, NavItem} from "react-bootstrap";
+import {Container, Nav, Navbar} from "react-bootstrap";
 import image from "../assets/image.png";
 
 const Header = () => {

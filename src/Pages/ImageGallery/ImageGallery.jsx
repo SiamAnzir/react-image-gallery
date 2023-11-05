@@ -1,11 +1,10 @@
-import React, {useState, useRef, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import AllImages from "../../store/store.js";
 import "./ImageGallery.css"
-import {Button, Card, Form, Row} from "react-bootstrap";
+import {Button, Card, Form} from "react-bootstrap";
 import Header from "../../components/Header.jsx";
 
 const ImageGallery = () => {
-    const cardRef = useRef(null)
     const [imageAlbum , setImageAlbum] = useState(AllImages);
     const [draggedIndex, setDraggedIndex] = useState(null);
     const [isHovered, setIsHovered] = useState(false);
@@ -14,6 +13,9 @@ const ImageGallery = () => {
     const [dragOverIndex , setDragOverIndex] = useState(null);
     const [moveImg , setMoveImg] = useState(true);
     const [prevMoveImg , setPrevMoveImg] = useState(null);
+    const [imageLoader,setImageLoader] = useState(true);
+
+    /** Setting State When Image State Will Modify **/
 
     useEffect(() => {
         if(prevMoveImg !== null && dragOverIndex !== null && prevMoveImg !== dragOverIndex && !moveImg){
@@ -22,12 +24,13 @@ const ImageGallery = () => {
         }
     }, [prevMoveImg,dragOverIndex]);
 
+    /** Drag Start Function Declared **/
     const handleDragStart = (e, index) => {
         e.dataTransfer.setData('text', index);
         setDraggedIndex(index);
-        //console.log("Drag Start", index)
     };
 
+    /** Drag Over Function Declared **/
     const handleDragOver = (e,index) => {
         e.preventDefault();
         setDragOverIndex(index);
@@ -43,6 +46,7 @@ const ImageGallery = () => {
         }
     }
 
+    /** Image Drop Function Declared **/
     const handleDrop = (e, index) => {
         e.preventDefault();
         const dragIndex = e.dataTransfer.getData('text')
@@ -53,7 +57,7 @@ const ImageGallery = () => {
         }
     };
 
-
+    /** Check-box Click Function Declared **/
     const handleClick = (e) => {
         const { id, checked } = e.target;
         setIsCheck([...isCheck, parseInt(id)]);
@@ -61,6 +65,8 @@ const ImageGallery = () => {
             setIsCheck(isCheck.filter((item) => item !== parseInt(id)));
         }
     };
+
+    /** Delete Items Function Declared **/
     const deleteItems = () => {
         const updatedImageAlbum = imageAlbum.filter(item => !isCheck.includes(item.id));
         setImageAlbum(updatedImageAlbum);
@@ -111,19 +117,17 @@ const ImageGallery = () => {
                                             setHoverIndex(null);
                                             setIsHovered(false)
                                         }}
-                                         style={{
-                                             // transform: `${dragOverIndex !== null ? `scale(1)`: ''}`,
-                                             // transition: `${dragOverIndex !== null ? 'scale 0.5s ease-in-out' : ''}`,
-
-                                         }}
                                     >
                                         <img src={image.imageUrl} alt={image.name}
                                              style={{
                                                  opacity: `${isCheck.includes(image.id) ? '0.5': ''}`,
-                                                 // animationName: `${dragOverIndex !== null ? 'example' : ''}`,
-                                                 // animationDuration: `${dragOverIndex !== null ? '1s' : ''}`
+                                                 display: `${imageLoader ? "none" : ""}`
                                             }}
+                                             onLoad={() => setImageLoader(false)}
                                         />
+                                        {
+                                            imageLoader &&  <div className="skeleton" style={{height:`${index === 0 ? '100%' : '150px'}`}}></div>
+                                        }
                                         {isHovered && hoverIndex === index && (
                                             <span style={{position:"absolute" , top:"10px", left:"10px",zIndex:"2" , cursor:"pointer"}}>
                                                 <Form.Check
@@ -160,12 +164,6 @@ const ImageGallery = () => {
                         </Card.Body>
                     </Card>
                 </div>
-                <br/>
-                {/*<div style={{background:"black",height:"200px",width:"300px"}}*/}
-                {/*     onDrop={(e) => handleDragOver(e)}*/}
-                {/*     onDragOver={(e) => e.preventDefault()}>*/}
-
-                {/*</div>*/}
             </div>
         </>
     )

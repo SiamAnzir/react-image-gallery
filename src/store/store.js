@@ -10,10 +10,6 @@ import image9 from "../assets/Images/image-9.webp";
 import image10 from "../assets/Images/image-10.jpeg";
 import image11 from "../assets/Images/image-11.jpeg";
 
-
-export const TestImages = [
-    image1,image2,image8,image9
-]
 const AllImages = [
     {
         id:1,
